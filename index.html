@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>MoodPalette</h1>
+    <div class="art-prompt">Prompt: Choose a color and start drawing!</div>
+    <canvas id="canvas" width="800" height="600"></canvas>
+    <div class="color-palette">
+      <div id="color1" class="color-selector"></div>
+      <div id="color2" class="color-selector"></div>
+      <div id="color3" class="color-selector"></div>
+      <div id="color4" class="color-selector"></div>
+      <div id="color5" class="color-selector"></div>
+      <div id="eraser" class="color-selector eraser"></div> <!-- Added eraser tool -->
+    </div>
+    <input type="range" id="brushSize" min="1" max="20" value="10">
+    <div class="tool-buttons">
+      <button class="capture-mood-button">Capture Mood</button>
+      <button class="clear-button">Clear Canvas</button> <!-- Added "Clear Canvas" button -->
+      <button class="save-button">Save Artwork</button>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

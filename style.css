@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Dokdo&display=swap');
+
+body {
+  font-family: 'Dokdo', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #221f1f; /* Dark background color */
+  overflow: hidden; /* Disable scrolling */
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: calc(100vh - 100px); /* Adjust height to leave space for the footer */
+  padding-top: 20px; /* Add top padding to align elements below the title */
+}
+
+h1 {
+  color: #e8dbc5;
+  font-size: 50px;
+  text-align: center;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+
+.art-prompt {
+  color: #e8dbc5;
+  margin-bottom: 20px;
+}
+
+.canvas-section {
+  text-align: center;
+  margin-bottom: 20px; /* Add margin between elements */
+}
+
+#canvas {
+  border: 1px solid #eee7dc; /* Light border color */
+  background-color: #eee7dc; /* Light gray canvas */
+  width: 800px; /* Adjust canvas width as desired */
+  height: 600px; /* Adjust canvas height as desired */
+  border-radius: 20px; /* Rounded edges for a cozy feel */
+}
+
+.color-palette {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.color-selector {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 20px 5px;
+  margin-bottom: -5px;
+  cursor: pointer;
+}
+
+/* Customize individual color selectors with different colors */
+#color1 {
+  background-color: #d4a19a;
+}
+
+#color2 {
+  background-color: #e8a87c;
+}
+
+#color3 {
+  background-color: #f4ca64;
+}
+
+#color4 {
+  background-color: #eadb92;
+}
+
+#color5 {
+  background-color: #c2dbd8;
+}
+
+.color-selector.selected {
+  box-shadow: 0 0 0 4px #e4d1b0; /* Increased border size for selected circle */
+}
+
+.eraser {
+  background-color: #ffffff; /* Set eraser color to white */
+}
+
+.eraser.selected {
+  box-shadow: 0 0 0 4px #e4d1b0 /* Increased border size for selected eraser */
+}
+
+.erase-mode {
+  cursor: url('erase-cursor.png'), auto; /* Replace 'erase-cursor.png' with your own erase cursor image */
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 300px;
+  height: 6px;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+  outline: none;
+  margin-bottom: 20px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: #e8dbc5;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  position: relative;
+  top: 70%; /* Adjust the value as desired */
+  transform: translateY(20%);
+  margin-top: -10px;
+}
+
+
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background-color: #d6c2a9;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  background-color: #c2ab93;
+}
+
+.tool-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+button {
+  margin: 0 5px;
+  background-color: #e8dbc5;
+  border: none;
+  padding: 10px 20px;
+  color: #221f1f;
+  cursor: pointer;
+  font-family: 'Dokdo', Arial, sans-serif;
+  font-size: 16px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #d6c2a9;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #fff;
+}
+
