@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" type="text/css" href="/static/styles.css">
 </head>
 <body>
   <main>
@@ -23,6 +23,24 @@
       <button class="save-button">Save Artwork</button>
     </div>
   </main>
-  <script src="script.js"></script>
+  
+  <!-- Popup Window -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <span class="close-button">&times;</span>
+      <div class="canvas-container">
+        <canvas id="canvas" class="popup-canvas"></canvas>
+      </div>
+      <div class="button-container">
+        <button id="capture-button">Capture Image</button>
+        <button id="retake-button">Retake Image</button>
+        <button id="detect-button">Detect Mood</button>
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <script src="/static/script.js"></script>
 </body>
 </html>

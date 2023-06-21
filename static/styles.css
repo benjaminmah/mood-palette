@@ -13,8 +13,9 @@ main {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: calc(100vh - 100px); /* Adjust height to leave space for the footer */
+  min-height: 100vh; /* Adjust height to fill the entire viewport */
   padding-top: 20px; /* Add top padding to align elements below the title */
+  box-sizing: border-box; /* Include padding in height calculation */
 }
 
 h1 {
@@ -38,8 +39,9 @@ h1 {
 #canvas {
   border: 1px solid #eee7dc; /* Light border color */
   background-color: #eee7dc; /* Light gray canvas */
-  width: 800px; /* Adjust canvas width as desired */
-  height: 600px; /* Adjust canvas height as desired */
+  width: 100%; /* Set canvas width to 100% */
+  max-width: 600px; /* Limit maximum canvas width */
+  height: auto; /* Allow canvas height to adjust based on width */
   border-radius: 20px; /* Rounded edges for a cozy feel */
 }
 
@@ -85,10 +87,23 @@ h1 {
 
 .eraser {
   background-color: #ffffff; /* Set eraser color to white */
+  position: relative;
+  overflow: hidden;
+}
+
+.eraser::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  width: 100px;
+  height: 5px;
+  background-color: rgb(229, 80, 80);
 }
 
 .eraser.selected {
-  box-shadow: 0 0 0 4px #e4d1b0 /* Increased border size for selected eraser */
+  box-shadow: 0 0 0 4px #e4d1b0; /* Increased border size for selected eraser */
 }
 
 .erase-mode {
@@ -98,7 +113,8 @@ h1 {
 input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
-  width: 300px;
+  width: 100%; /* Set range input width to 100% */
+  max-width: 300px; /* Limit maximum range input width */
   height: 6px;
   background-color: #f8f8f8;
   border-radius: 3px;
@@ -121,8 +137,6 @@ input[type="range"]::-webkit-slider-thumb {
   transform: translateY(20%);
   margin-top: -10px;
 }
-
-
 
 input[type="range"]::-webkit-slider-thumb:hover {
   background-color: #d6c2a9;
@@ -160,3 +174,69 @@ button:focus {
   box-shadow: 0 0 0 2px #fff;
 }
 
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.popup-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  position: relative;
+  width: 90%;
+  max-width: 640px;
+  height: auto;
+  max-height: 80vh;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.canvas-container {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: 460px;
+  border: 1px solid #eee7dc;
+  background-color: #eee7dc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+.popup-canvas {
+  flex-grow: 1;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #eee7dc;
+  background-color: #eee7dc;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+
+.close-button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  align-self: flex-end; /* Align close button to the right */
+}
