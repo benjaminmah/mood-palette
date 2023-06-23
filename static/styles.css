@@ -14,7 +14,7 @@ main {
   align-items: center;
   justify-content: flex-start;
   min-height: 100vh; /* Adjust height to fill the entire viewport */
-  padding-top: 20px; /* Add top padding to align elements below the title */
+  padding-top: 50px; /* Add top padding to align elements below the title */
   box-sizing: border-box; /* Include padding in height calculation */
 }
 
@@ -239,4 +239,23 @@ button:focus {
   color: #333;
   cursor: pointer;
   align-self: flex-end; /* Align close button to the right */
+}
+
+.mood-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 100px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 18px;
+  text-align: center;
+  line-height: 100px;
+  display: none; /* Hide the mood box by default */
+}
+
+.show-mood-box .mood-box {
+  display: block; /* Show the mood box when the mood is received */
 }

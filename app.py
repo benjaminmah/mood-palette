@@ -1,4 +1,9 @@
+import random
 from flask import Flask, request, jsonify, render_template
+from deepface import DeepFace
+import os
+
+WINDOWS = True
 
 app = Flask(__name__)
 
@@ -8,22 +13,45 @@ def index():
 
 @app.route('/analyze_mood', methods=['POST'])
 def analyze_mood():
-    print("TESTING HELLOOOO!!!")
     # Retrieve the image data sent from the client
-    image_data = request.files['image'].read()
+    image_file = request.files['image']
 
-    # Process the image using your machine learning model
-    # Replace this code with the actual logic for mood analysis
-    mood = analyze_mood_with_model(image_data)
+    # Save the file to a specific folder
+    if WINDOWS:
+        folder_path = "C:\\Users\\Benjamin Mah\\Documents\\GITHUB\\mood-palette\\images"  # Specify the folder path
+
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    else:
+        clear_directory(folder_path)
+    
+    file_path = os.path.join(folder_path, "captured_image.png")
+    image_file.save(file_path)
+
+
+    mood = analyze_mood_with_model(file_path)
 
     # Return the mood analysis results
     return jsonify({'mood': mood})
 
-def analyze_mood_with_model(image_data):
-    # TODO: Implement the logic to analyze the mood using your machine learning model
-    # You'll need to load the model, preprocess the image, and make predictions
+def analyze_mood_with_model(file_path):
+    face_analysis = DeepFace.analyze(img_path = file_path)
     # Return the mood result as a string or any desired format
-    return 'Happy'  # Replace this with the actual mood result
+    return face_analysis[0]["dominant_emotion"]  # Replace this with the actual mood result
+
+def clear_directory(directory_path):
+    # Get the list of files and directories in the target directory
+    file_list = os.listdir(directory_path)
+
+    # Iterate over the file list and remove files and directories
+    for file_name in file_list:
+        file_path = os.path.join(directory_path, file_name)
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+        elif os.path.isdir(file_path):
+            os.rmdir(file_path)
+
+    print("Directory cleared successfully:", directory_path)
 
 if __name__ == '__main__':
     app.run()

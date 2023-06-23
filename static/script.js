@@ -1,3 +1,8 @@
+window.addEventListener("load", () => {
+  const popup = document.querySelector(".popup");
+  popup.style.display = "none";
+});
+
 // JavaScript to handle color selection and drawing on canvas
 
 // Get all color selectors
@@ -170,6 +175,7 @@ captureMoodButton.addEventListener("click", () => {
   let isCaptured = false; // Track whether an image is captured
   let isDetecting = false; // Track whether mood detection is in progress
 
+
   // Function to start the camera and draw video on the canvas
   const startCamera = () => {
     // Open camera and capture stream
@@ -253,9 +259,14 @@ captureMoodButton.addEventListener("click", () => {
     popupContent.innerHTML = "";
     popupContent.appendChild(capturedImage);
 
+    // Replace the existing image element with the captured image
+    const imgElement = document.querySelector("#popup .canvas-container img");
+    imgElement.parentNode.replaceChild(capturedImage, imgElement);
+
     isCaptured = true; // Set the captured flag
   };
 
+  // Function to send the captured image to Python for mood detection
   // Function to send the captured image to Python for mood detection
   const detectMood = () => {
     // Disable interaction with buttons during mood detection
@@ -263,61 +274,222 @@ captureMoodButton.addEventListener("click", () => {
     retakeButton.disabled = true;
     detectButton.disabled = true;
     closeButton.disabled = true;
-
+  
     // Change the text of the detect button to "Loading..."
     detectButton.textContent = "Loading...";
-
-    // Convert the captured image to Blob format
-    popupContent.querySelector("img").toBlob((blob) => {
-      // Create a FormData object to send the image file
-      const formData = new FormData();
-      formData.append("image", blob, "captured_image.png");
-
-      // Send the image data to the Flask server for mood detection
-      fetch("/analyze_mood", {
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // Handle the mood analysis results from the server
-          const mood = data.mood;
-
-          // Display the mood result
-          const moodResult = document.createElement("p");
-          moodResult.textContent = `Detected Mood: ${mood}`;
-          popupContent.appendChild(moodResult);
-
-          // Enable interaction with buttons after mood detection
-          captureButton.disabled = false;
-          retakeButton.disabled = false;
-          detectButton.disabled = false;
-          closeButton.disabled = false;
-
-          // Change the text of the detect button back to "Detect Mood"
-          detectButton.textContent = "Detect Mood";
-
-          // Reset the UI state
-          isCaptured = false;
-          isDetecting = false;
+  
+    // Get the captured image element
+    const capturedImage = popupContent.querySelector(".canvas-container img");
+  
+    // Fetch the image data and convert it to Blob format
+    fetch(capturedImage.src)
+      .then((response) => response.blob())
+      .then((blob) => {
+        // Create a new FormData object
+        const formData = new FormData();
+        formData.append("image", blob, "captured_image.png");
+  
+        // Send the image data to the Python server for mood detection
+        fetch("/analyze_mood", { // Replace "/analyze_mood" with the actual endpoint URL of your Python server
+          method: "POST",
+          body: formData,
         })
-        .catch((error) => {
-          console.error("Error during mood detection:", error);
-          // Enable interaction with buttons in case of error
-          captureButton.disabled = false;
-          retakeButton.disabled = false;
-          detectButton.disabled = false;
-          closeButton.disabled = false;
+          .then((response) => response.json())
+          .then((data) => {
+            // Handle the mood analysis results from the server
+            const mood = data.mood;
 
-          // Change the text of the detect button back to "Detect Mood"
-          detectButton.textContent = "Detect Mood";
+            // Create the mood result element
+            const moodResult = document.createElement("p");
+            moodResult.textContent = `Detected Mood: ${mood}`;
 
-          // Reset the UI state
-          isCaptured = false;
-          isDetecting = false;
-        });
-    }, "image/png");
+            // Get the mood container element
+            const moodContainer = document.getElementById("mood-container");
+
+            // Clear any existing mood results
+            moodContainer.innerHTML = "";
+
+            // Append the mood result to the mood container
+            moodContainer.appendChild(moodResult);
+
+            // Update prompt based on mood
+            const prompt = document.querySelector(".art-prompt");
+            const h1Element = document.querySelector('h1');
+
+            if (mood === "happy") {
+              const Prompts = [
+                "Draw a vibrant sunset over a serene beach scene.",
+                "Create a colorful abstract composition that represents joy.",
+                "Illustrate a bouquet of flowers in full bloom, radiating happiness.",
+                "Draw a playful scene with children laughing and playing.",
+                "Design a cheerful and whimsical character that spreads happiness."
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#FFD95B";
+              document.getElementById("color2").style.backgroundColor = "#FFC26C";
+              document.getElementById("color3").style.backgroundColor = "#FFA57C";
+              document.getElementById("color4").style.backgroundColor = "#FF8C8C";
+              document.getElementById("color5").style.backgroundColor = "#FF7171";
+              document.body.style.backgroundColor = "#FFE8A1";
+              h1Element.style.color = "#FF7171";
+              prompt.style.color = "#FF7171";
+            } else if (mood === "sad") {
+              const Prompts = [
+                "Create a self-portrait that captures your current mood.",
+                "Illustrate a comforting scene or moment from your favorite book or movie.",
+                "Draw a serene landscape that brings you a sense of peace.",
+                "Express your emotions through abstract shapes and lines.",
+                "Sketch a symbolic representation of hope and resilience.",
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#85C7E8";
+              document.getElementById("color2").style.backgroundColor = "#6AA4C9";
+              document.getElementById("color3").style.backgroundColor = "#5285AE";
+              document.getElementById("color4").style.backgroundColor = "#3B668E";
+              document.getElementById("color5").style.backgroundColor = "#27496D";
+              document.body.style.backgroundColor = "#74A8D9";
+              h1Element.style.color = "#27496D";
+              prompt.style.color = "#27496D";
+            } else if (mood === "angry") {
+              const Prompts = [
+                "Draw bold and dynamic lines to release your anger on the canvas.",
+                "Create a visual representation of what calmness means to you.",
+                "Illustrate a peaceful setting where conflicts are resolved peacefully.",
+                "Use contrasting colors to convey the transformation from anger to serenity.",
+                "Draw a series of abstract shapes that represent the process of letting go of anger.",
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#FF7676";
+              document.getElementById("color2").style.backgroundColor = "#FF5C5C";
+              document.getElementById("color3").style.backgroundColor = "#FF4242";
+              document.getElementById("color4").style.backgroundColor = "#FF2828";
+              document.getElementById("color5").style.backgroundColor = "#FF0E0E";
+              document.body.style.backgroundColor = "#FF4D4D";
+              h1Element.style.color = "#ffb0b0";
+              prompt.style.color = "#ffb0b0";
+            } else if (mood === "disgust") {
+              const Prompts = [
+                "Illustrate a scene of beauty that challenges your initial feeling of disgust.",
+                "Create a visual representation of finding beauty in the mundane or overlooked.",
+                "Draw a detailed close-up of an object or subject that initially disgusted you.",
+                "Use vibrant colors to transform something typically associated with disgust into something intriguing.",
+                "Sketch a person or character that embodies resilience and the ability to overcome negative emotions.",
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#B4D5AA";
+              document.getElementById("color2").style.backgroundColor = "#9ACB90";
+              document.getElementById("color3").style.backgroundColor = "#81C076";
+              document.getElementById("color4").style.backgroundColor = "#67B65C";
+              document.getElementById("color5").style.backgroundColor = "#4EA842";
+              document.body.style.backgroundColor = "#94C98B";
+              h1Element.style.color = "#4EA842";
+              prompt.style.color = "#4EA842";
+            } else if (mood === "fear") {
+              const Prompts = [
+                "Draw a safe and secure space that represents protection from your fears.",
+                "Illustrate a courageous figure or superhero overcoming their fears.",
+                "Create a visual representation of stepping out of your comfort zone.",
+                "Draw a dream-like scene that transforms your fears into something beautiful.",
+                "Sketch a symbol that represents strength and empowerment in the face of fear.",
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#B5C6E0";
+              document.getElementById("color2").style.backgroundColor = "#9FB3D3";
+              document.getElementById("color3").style.backgroundColor = "#8BA1C7";
+              document.getElementById("color4").style.backgroundColor = "#7690BA";
+              document.getElementById("color5").style.backgroundColor = "#617FAE";
+              document.body.style.backgroundColor = "#95A8C5";
+              h1Element.style.color = "#617FAE";
+              prompt.style.color = "#617FAE";
+            } else if (mood === "surprise") {
+              const Prompts = [
+                "Draw an unexpected twist to a familiar scene or object.",
+                "Illustrate a magical or whimsical moment that captures the feeling of surprise.",
+                "Create a visual representation of an unexpected connection between two unrelated elements.",
+                "Draw a surreal composition that evokes a sense of awe and wonder.",
+                "Sketch a series of surprising transformations or metamorphoses.",
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#FECB89";
+              document.getElementById("color2").style.backgroundColor = "#FFBD75";
+              document.getElementById("color3").style.backgroundColor = "#FFAF62";
+              document.getElementById("color4").style.backgroundColor = "#FFA04F";
+              document.getElementById("color5").style.backgroundColor = "#FF922C";
+              document.body.style.backgroundColor = "#FFB677";
+              h1Element.style.color = "#e07510";
+              prompt.style.color = "#e07510";
+            } else if (mood === "neutral") {
+              const Prompts = [
+                "Create a detailed still life drawing of everyday objects.",
+                "Illustrate a scene of balance and harmony between different elements.",
+                "Draw a calming and meditative pattern or mandala.",
+                "Use shading and texture to convey a sense of tranquility and inner peace.",
+                "Sketch a composition inspired by natural patterns and symmetry.",
+              ];
+              const randomPrompt = Prompts[Math.floor(Math.random() * Prompts.length)];
+              prompt.textContent = randomPrompt;
+              document.getElementById("color1").style.backgroundColor = "#D6D6D6";
+              document.getElementById("color2").style.backgroundColor = "#BFBFBF";
+              document.getElementById("color3").style.backgroundColor = "#A8A8A8";
+              document.getElementById("color4").style.backgroundColor = "#919191";
+              document.getElementById("color5").style.backgroundColor = "#7A7A7A";
+              document.body.style.backgroundColor = "#B1B1B1";
+              h1Element.style.color = "#7A7A7A";
+              prompt.style.color = "#7A7A7A";
+            }
+            
+            // Enable interaction with buttons after mood detection
+            captureButton.disabled = false;
+            retakeButton.disabled = false;
+            detectButton.disabled = false;
+            closeButton.disabled = false;
+  
+            // Change the text of the detect button back to "Detect Mood"
+            detectButton.textContent = "Detect Mood";
+  
+            // Reset the UI state
+            isCaptured = false;
+            isDetecting = false;
+          })
+          .catch((error) => {
+            console.error("Error during mood detection:", error);
+            // Enable interaction with buttons in case of error
+            captureButton.disabled = false;
+            retakeButton.disabled = false;
+            detectButton.disabled = false;
+            closeButton.disabled = false;
+  
+            // Change the text of the detect button back to "Detect Mood"
+            detectButton.textContent = "Detect Mood";
+  
+            // Reset the UI state
+            isCaptured = false;
+            isDetecting = false;
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching image data:", error);
+        // Enable interaction with buttons in case of error
+        captureButton.disabled = false;
+        retakeButton.disabled = false;
+        detectButton.disabled = false;
+        closeButton.disabled = false;
+  
+        // Change the text of the detect button back to "Detect Mood"
+        detectButton.textContent = "Detect Mood";
+  
+        // Reset the UI state
+        isCaptured = false;
+        isDetecting = false;
+      });
   };
+  
 
   // Function to retake the image
   const retakeImage = () => {
@@ -338,6 +510,8 @@ captureMoodButton.addEventListener("click", () => {
       // If mood detection is in progress, do nothing
       return;
     }
+    isCaptured = false;
+    isDetecting = false;
 
     popup.style.display = "none";
     stopCamera();
