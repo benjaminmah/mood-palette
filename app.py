@@ -3,7 +3,7 @@ from flask import Flask, request, jsonify, render_template
 from deepface import DeepFace
 import os
 
-WINDOWS = True
+WINDOWS = False
 
 app = Flask(__name__)
 
@@ -19,6 +19,8 @@ def analyze_mood():
     # Save the file to a specific folder
     if WINDOWS:
         folder_path = "C:\\Users\\Benjamin Mah\\Documents\\GITHUB\\mood-palette\\images"  # Specify the folder path
+    else:
+        folder_path = "/Users/benjaminmah/Documents/GITHUB/mood-palette/images"
 
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
